@@ -1,13 +1,13 @@
 select {
-	width: 350px;
-    font-size: 24px;
-	border: 3px solid grey;
-    border-radius: 7px;
+  width: 250px;
+  font-size: 24px;
+  border: 3px solid rgba(83, 74, 74, 0.315);
+  border-radius: 7px;
 }
-div {
-	margin-top: 10px;
-	width: 400px;
-    font-size: 24px;
-	border: 3px solid grey;
-    border-radius: 7px;
+.output {
+  margin-top: 10px;
+  width: 400px;
+  font-size: 24px;
+  border: 3px solid rgba(83, 74, 74, 0.315);
+  border-radius: 7px;
 }

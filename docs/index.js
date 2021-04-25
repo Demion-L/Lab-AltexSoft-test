@@ -1,61 +1,80 @@
-function getRandomLetter() {
-    const randomChars = 'abcdefghijklmnopqrstuvwxyz';
-    const result = [];
-    for ( let i = 0; i < 5; i++ ) {
-        result.push(randomChars.charAt(Math.floor(Math.random() * randomChars.length)));
-    }
-    return result;
-}
-let randomLettersArray = getRandomLetter()
-
 const slct = document.querySelector("#select");
+let selLen = slct.options.length;
+const a = 6;
 
-const opt1 = document.createElement("option"),
-      opt2 = document.createElement("option"),
-      opt3 = document.createElement("option"),
-      opt4 = document.createElement("option"),
-      opt5 = document.createElement("option");
-
-opt1.value = `randomLettersArray[0]`;
-opt1.text = `Option: Value ${randomLettersArray[0]}`;
-opt2.value = `randomLettersArray[1]`;
-opt2.text = `Option: Value ${randomLettersArray[1]}`;
-opt3.value = `randomLettersArray[2]`;
-opt3.text = `Option: Value ${randomLettersArray[2]}`;
-opt4.value = `randomLettersArray[3]`;
-opt4.text = `Option: Value ${randomLettersArray[3]}`;
-opt5.value = `randomLettersArray[4]`;
-opt5.text = `Option: Value ${randomLettersArray[4]}`;
-
-slct.add(opt1, null);
-slct.add(opt2, null);
-slct.add(opt3, null);
-slct.add(opt4, null);
-slct.add(opt5, null);
-
-function showStuff() {
-    fetch("/get/list.json")
-        .then(response => response.json())
-        .then(data => {
-           console.log(data)
-        });
+function getRandomLetter() {
+  const randomChars = "abcdefghijklmnopqrstuvwxyz";
+  const result = [];
+  for (let i = 0; i < a; i++) {
+    let res = "";
+    let chars = randomChars.charAt(
+      Math.floor(Math.random() * randomChars.length)
+    );
+    if (res !== chars) {
+      result.push(chars);
+      res = chars;
+    }
+  }
+  return result;
 }
 
-showStuff()
+function render(array) {
+  let div = document.createElement("div");
+  div.classList.add("output");
+  div.innerText = `${array}`;
+  document.body.appendChild(div);
+  console.log(array);
+}
 
+function nothingToDisplay(array) {
+  let div = document.createElement("div");
+  div.classList.add("output");
+  div.innerText = "Sorry ther is no matched info by your request";
+  document.body.appendChild(div);
+  console.log(array);
+}
 
+let randomLettersArray = getRandomLetter();
 
+slct.addEventListener("change", () => {
+  let selectedValue = slct.value;
 
+  let choosenNames;
+  const showStuff = async (letter) => {
+    const response = await fetch("get/list.json")
+      .then((response) => {
+        if (!response.ok) {
+          throw new Error("Failed with HTTP code " + response.status);
+        }
+        return response;
+      })
+      .then((result) => result.json())
+      .then((data) => {
+        const namesArray = [];
+        for (let i = 0; i < data.length; i++) {
+          namesArray.push(data[i].name.toLowerCase());
+        }
+        choosenNames = namesArray.filter((name) => name.startsWith(letter));
+        console.log(choosenNames);
+        if (choosenNames.length !== 0) {
+          render(choosenNames);
+        } else {
+          nothingToDisplay();
+        }
+      })
+      .catch(function () {
+        this.dataError = true;
+      });
+  };
+  let dataToshow = showStuff(selectedValue);
+});
 
-
-
-
-
-
-
-
-
-
-
-
-
+function addSelects() {
+  for (let i = 1; i < a; i++) {
+    slct.options[selLen++] = new Option(
+      `Option: Value ${randomLettersArray[i]}`,
+      `${randomLettersArray[i]}`
+    );
+  }
+}
+addSelects();
