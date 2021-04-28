@@ -1,6 +1,9 @@
-const slct = document.querySelector("#select");
-let selLen = slct.options.length;
-const a = 6;
+const slct = document.querySelector("#select"),
+  form = document.querySelector("#form");
+
+let selLen = slct.options.length,
+  a = 6,
+  list = document.createElement("ol");
 
 function getRandomLetter() {
   const randomChars = "abcdefghijklmnopqrstuvwxyz";
@@ -19,11 +22,17 @@ function getRandomLetter() {
 }
 
 function render(array) {
-  let div = document.createElement("div");
-  div.classList.add("output");
-  div.innerText = `${array}`;
-  document.body.appendChild(div);
-  console.log(array);
+  // let list = document.createElement("ol");
+  list.classList.add("output");
+  form.insertAdjacentElement("afterend", list);
+  array.forEach((item) => {
+    list.insertAdjacentHTML(
+      "afterbegin",
+      `
+    <li>${item}</li>
+    `
+    );
+  });
 }
 
 function nothingToDisplay(array) {
@@ -36,10 +45,11 @@ function nothingToDisplay(array) {
 
 let randomLettersArray = getRandomLetter();
 
+
 slct.addEventListener("change", () => {
   let selectedValue = slct.value;
+  let choosenNames = [];
 
-  let choosenNames;
   const showStuff = async (letter) => {
     const response = await fetch("get/list.json")
       .then((response) => {
@@ -57,6 +67,7 @@ slct.addEventListener("change", () => {
         choosenNames = namesArray.filter((name) => name.startsWith(letter));
         console.log(choosenNames);
         if (choosenNames.length !== 0) {
+          if(list)
           render(choosenNames);
         } else {
           nothingToDisplay();
